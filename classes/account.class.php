@@ -81,8 +81,45 @@ class Account{
 
         return $data;
     }
+
+    // Add this method to fetch all accounts
+    function getAllAccounts($role = '', $search = '') {
+        $sql = "SELECT * FROM account WHERE 1=1";
+        
+        if (!empty($role)) {
+            $sql .= " AND role = :role";
+        }
+        
+        if (!empty($search)) {
+            $sql .= " AND (first_name LIKE :search 
+                          OR last_name LIKE :search 
+                          OR username LIKE :search)";
+        }
+        
+        $sql .= " ORDER BY id ASC";
+        
+        $query = $this->db->connect()->prepare($sql);
+        
+        if (!empty($role)) {
+            $query->bindParam(':role', $role);
+        }
+        
+        if (!empty($search)) {
+            $searchTerm = "%{$search}%";
+            $query->bindParam(':search', $searchTerm);
+        }
+        
+        $data = [];
+        if($query->execute()){
+            $data = $query->fetchAll();
+        }
+        
+        return $data;
+    }
 }
 
 // $obj = new Account();
 
 // $obj->add();
+
+

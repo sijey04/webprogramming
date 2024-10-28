@@ -1,12 +1,25 @@
 <?php
     session_start();
 
-    if(isset($_SESSION['account'])){
-        if(!$_SESSION['account']['is_staff']){
-            header('location: ../account/login.php');
-        }
-    }else{
-        header('location: ../account/login.php');
+    // Check if the user is logged in and has the necessary permissions
+    if (!isset($_SESSION['account']) || !$_SESSION['account']['is_admin']) {
+        
+        header('HTTP/1.0 403 Forbidden');
+        echo '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Forbidden</title>
+        </head>
+        <body>
+            <h1>Forbidden</h1>
+            <p>You don\'t have permission to access this resource.</p>
+            <hr>
+            <address>Apache/2.4.41 (Ubuntu) Server at beta.example.com Port 80</address>
+        </body>
+        </html>';
+        exit;
     }
 
     require_once '../includes/head.php';

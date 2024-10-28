@@ -1,3 +1,45 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['account']) || !$_SESSION['account']['is_admin']) {
+    
+    header('HTTP/1.0 403 Forbidden');
+    echo '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forbidden</title>
+    </head>
+    <body>
+        <h1>Forbidden</h1>
+        <p>You don\'t have permission to access this resource.</p>
+        <hr>
+        <address>Apache/2.4.41 (Ubuntu) Server at beta.example.com Port 80</address>
+    </body>
+    </html>';
+    exit;
+}
+
+
+if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+    header('HTTP/1.0 403 Forbidden');
+    echo '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forbidden</title>
+    </head>
+    <body>
+        <h1>Forbidden</h1>
+        <p>You don\'t have permission to access this resource.</p>
+        <hr>
+        <address>Apache/2.4.41 (Ubuntu) Server at beta.example.com Port 80</address>
+    </body>
+    </html>';
+    exit;
+}
+
+?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">

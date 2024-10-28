@@ -1,3 +1,46 @@
+<?php
+session_start();
+
+// Check if the user is logged in and has the necessary permissions
+if (!isset($_SESSION['account']) || !$_SESSION['account']['is_admin']) {
+    // Redirect to a forbidden page or show a forbidden message
+    header('HTTP/1.0 403 Forbidden');
+    echo '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forbidden</title>
+    </head>
+    <body>
+        <h1>Forbidden</h1>
+        <p>You don\'t have permission to access this resource.</p>
+        <hr>
+        <address>Apache/2.4.41 (Ubuntu) Server at beta.example.com Port 80</address>
+    </body>
+    </html>';
+    exit;
+}
+
+// Check if the request is an AJAX request
+if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+    header('HTTP/1.0 403 Forbidden');
+    echo '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forbidden</title>
+    </head>
+    <body>
+        <h1>Forbidden</h1>
+        <p>You don\'t have permission to access this resource.</p>
+        <hr>
+        <address>Apache/2.4.41 (Ubuntu) Server at beta.example.com Port 80</address>
+    </body>
+    </html>';
+    exit;
+}
+
+?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -14,7 +57,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <?php
                             require_once '../classes/product.class.php';
-                            session_start();
                             $productObj = new Product();
                         ?>
                         <div class="d-flex justify-content-center align-items-center">
@@ -43,7 +85,7 @@
                             </div>
                         </div>
                         <div class="page-title-right d-flex align-items-center"> 
-                            <a id="add-product" href="#" class="btn btn-primary brand-bg-color">Add Product</a>
+                            <a id="add-product" href="add-product.php" class="btn btn-primary brand-bg-color">Add Product</a>
                         </div>
                     </div>
                     
