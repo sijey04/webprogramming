@@ -84,7 +84,6 @@ $(document).ready(function(){
                     ordering: false,
                 });
 
-                // Bind custom input to DataTable search
                 $('#custom-search').on('keyup', function() {
                     table.search(this.value).draw();
                 });
@@ -95,13 +94,15 @@ $(document).ready(function(){
                     }
                 });
 
-                $('#add-product').on('click', function(e){
+                // Update the click handler
+                $(document).on('click', '#add-product', function(e){
                     e.preventDefault();
                     addProduct();
                 });
             }
         });
     }
+
 
     function viewAccounts(){
         $.ajax({
@@ -115,32 +116,82 @@ $(document).ready(function(){
     }
 
     function addProduct(){
+        console.log('Add Product clicked');
         $.ajax({
             type: 'GET',
             url: '../products/add-product.html',
             dataType: 'html',
             success: function(view){
+                console.log('Modal HTML loaded');
                 $('.modal-container').html(view);
-                $('#staticBackdrop').modal('show');
+                
+                var myModal = new bootstrap.Modal(document.getElementById('modal-add-product'), {
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+                myModal.show();
 
                 fetchCategories();
+
+                // Add file input change handler
+                $('#product_image').on('change', function() {
+                    const fileInput = this;
+                    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                    const errorElement = $('#file-size-error');
+                    
+                    if (fileInput.files.length > 0) {
+                        const fileSize = fileInput.files[0].size;
+                        if (fileSize > maxSize) {
+                            // Show error message
+                            errorElement.text('Error: File size exceeds 5MB limit. Please choose a smaller file.').show();
+                            // Clear the file input
+                            fileInput.value = '';
+                            $(fileInput).addClass('is-invalid');
+                        } else {
+                            // Clear error message if file size is acceptable
+                            errorElement.hide();
+                            $(fileInput).removeClass('is-invalid');
+                        }
+                    }
+                });
 
                 $('#form-add-product').on('submit', function(e){
                     e.preventDefault();
                     saveProduct();
                 });
+            },
+            error: function(xhr, status, error) {
+                console.error('Ajax error:', error);
             }
         });
     }
 
     function saveProduct(){
+        let formData = new FormData($('#form-add-product')[0]);
+        
+        // Check file size before upload
+        let fileInput = $('#product_image')[0];
+        if (fileInput.files.length > 0) {
+            let fileSize = fileInput.files[0].size;
+            let maxSize = 5 * 1024 * 1024; // 5MB in bytes
+            
+            if (fileSize > maxSize) {
+                $('#file-size-error').text('Error: File size exceeds 5MB limit. Please choose a smaller file.').show();
+                $('#product_image').addClass('is-invalid');
+                return false;
+            }
+        }
+        
         $.ajax({
             type: 'POST',
             url: '../products/add-product.php',
-            data: $('form').serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'error') {
+                    // Handle other validation errors
                     if (response.codeErr) {
                         $('#code').addClass('is-invalid');
                         $('#code').next('.invalid-feedback').text(response.codeErr).show();
@@ -165,11 +216,25 @@ $(document).ready(function(){
                     } else {
                         $('#price').removeClass('is-invalid');
                     }
+                    if (response.imageErr) {
+                        $('#product_image').addClass('is-invalid');
+                        $('#file-size-error').text(response.imageErr).show();
+                    } else {
+                        $('#product_image').removeClass('is-invalid');
+                        $('#file-size-error').hide();
+                    }
                 } else if (response.status === 'success') {
-                    $('#staticBackdrop').modal('hide');
-                    $('form')[0].reset();
+                    var modalElement = document.getElementById('modal-add-product');
+                    var modal = bootstrap.Modal.getInstance(modalElement);
+                    modal.hide();
+                    
+                    $('#form-add-product')[0].reset();
                     viewProducts();
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error('Upload error:', error);
+                $('#file-size-error').text('An error occurred while uploading the file. Please try again.').show();
             }
         });
     }

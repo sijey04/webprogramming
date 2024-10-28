@@ -42,6 +42,9 @@ if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH
 
 ?>
 <div class="container-fluid">
+    <!-- Keep only one modal container -->
+    <div class="modal-container"></div>
+    
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
@@ -49,7 +52,6 @@ if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH
             </div>
         </div>
     </div>
-    <div class="modal-container"></div>
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -85,7 +87,7 @@ if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH
                             </div>
                         </div>
                         <div class="page-title-right d-flex align-items-center"> 
-                            <a id="add-product" href="add-product.php" class="btn btn-primary brand-bg-color">Add Product</a>
+                            <a id="add-product" href="#" class="btn btn-primary brand-bg-color">Add Product</a>
                         </div>
                     </div>
                     

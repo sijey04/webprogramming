@@ -1,8 +1,8 @@
-<div class="modal fade" id="modal-add-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="modal-add-product" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Add Product</h5>
+          <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div> 
         <form action="" method="post" id="form-add-product" enctype="multipart/form-data">
@@ -36,7 +36,9 @@
                 <div class="mb-2">
                     <label for="product_image" class="form-label">Image</label>
                     <input type="file" class="form-control" id="product_image" name="product_image" accept=".jpg, .jpeg, .png">
+                    <small class="text-muted d-block">Maximum file size: 5MB. Accepted formats: JPG, JPEG, PNG</small>
                     <div class="invalid-feedback"></div>
+                    <div id="file-size-error" class="text-danger" style="display: none;"></div>
                 </div>
             </div>
             <div class="modal-footer">
